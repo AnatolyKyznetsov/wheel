@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +7,26 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <div class="wheel-popup">
-        <!-- <audio src="./volchok.mp3" preload class="js-audio"></audio> -->
+    <style>
+        .wheel-popup {
+            --gradient-main: linear-gradient(90deg, #0F4791 0%, #2569C3 100%);
+            --content-bg: #ffffff;
+            --content-text: #2062B8;
+            --button-bg: #EE6889;
+            --button-text: #ffffff;
+            --ponter-bg: linear-gradient(90deg, #c2ce3b 0%, #E9F931 100%);
+            --sector-odd: #2569C3;
+            --sector-even: #25A9C3;
+        }
+
+        .wheel-popup__wrapper::before {
+            background: url('./test/bg.png') no-repeat center / cover;
+        }
+    </style>
+
+    <button class="js-wheelPopuapOpen">TEST</button>
+
+    <div class="wheel-popup js-wheelPopuap">
         <div class="wheel-popup__wrapper">
             <div class="wheel">
                 <div class="wheel__wrapper js-wheel">
@@ -17,7 +35,7 @@
                 </div>
             </div>
             <div class="wheel-content" id="confetti">
-                <div class="wheel-popup__close"></div>
+                <div class="wheel-popup__close js-wheelPopuapClose"></div>
                 <div class="wheel-content__wrapper">
                     <h2 class="wheel-content__title">
                         C праздником 23 февраля!
@@ -28,7 +46,7 @@
                 </div>
                 <div class="wheel-content__bottom">
                     <div class="wheel-content__lettering">
-                        Количество попыток: <span class="js-tries">3</span>
+                        Количество попыток: <span class="js-tries"></span>
                     </div>
                     <button class="wheel-content__button js-wheelStart">
                         Крутить колесо DSSL
@@ -37,6 +55,88 @@
             </div>
         </div>
     </div>
+    <audio src="./volchok.mp3" preload class="js-audio"></audio>
+
+    <script>
+        window.data = {
+            TRIES: 1,
+            LAST_PIRIZE_ID: null,
+            PRIZES: [
+                {
+                    name: 'Приз 1',
+                    text: 'lotem ipsum dolor sit amet',
+                    isPrize: true,
+                    id: 1,
+                },
+                {
+                    name: 'last',
+                    text: 'last text',
+                    isPrize: false,
+                    id: 2,
+                },
+                {
+                    name: 'Приз 2',
+                    text: 'lotem ipsum dolor sit amet',
+                    isPrize: true,
+                    id: 3,
+                },
+                {
+                    name: 'Пусто 2',
+                    text: 'lotem ipsum dolor sit amet',
+                    isPrize: false,
+                    id: 4,
+                },
+                {
+                    name: 'Приз 3',
+                    text: 'lotem ipsum dolor sit amet',
+                    isPrize: true,
+                    id: 5,
+                },
+                {
+                    name: 'Пусто 3',
+                    text: 'lotem ipsum dolor sit amet',
+                    isPrize: false,
+                    id: 6,
+                },
+                {
+                    name: 'Приз 4',
+                    text: 'lotem ipsum dolor sit amet',
+                    isPrize: true,
+                    id: 7,
+                },
+                {
+                    name: 'Пусто 4',
+                    text: 'lotem ipsum dolor sit amet',
+                    isPrize: false,
+                    id: 8,
+                },
+                {
+                    name: 'Приз 5',
+                    text: 'lotem ipsum dolor sit amet',
+                    isPrize: true,
+                    id: 9,
+                },
+                {
+                    name: 'Пусто 5',
+                    text: 'lotem ipsum dolor sit amet',
+                    isPrize: false,
+                    id: 10,
+                },
+                {
+                    name: 'Приз 6',
+                    text: 'lotem ipsum dolor sit amet',
+                    isPrize: true,
+                    id: 11,
+                },
+                {
+                    name: 'Пусто 6',
+                    text: 'lotem ipsum dolor sit amet',
+                    isPrize: false,
+                    id: 12,
+                },
+            ]
+        }
+    </script>
     <script src="./script.js"></script>
     <script src="./win.js"></script>
 </body>

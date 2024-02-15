@@ -2,7 +2,7 @@
 body {
     margin: 0;
     padding: 0;
-    background: url('./test.png') no-repeat top / cover;
+    background: url('./test/test.png') no-repeat top / cover;
 }
 
 /* ===================================================== */
@@ -12,27 +12,44 @@ body {
 }
 
 .wheel-popup {
-    --gradient-main: linear-gradient(90deg, #0F4791 0%, #2569C3 100%);
+    --gradient-main-default: linear-gradient(90deg, #0F4791 0%, #2569C3 100%);
+    --content-bg-default: #ffffff;
+    --content-text-default: #2062B8;
+    --button-bg-default: #EE6889;
+    --button-text-default: #ffffff;
+    --ponter-bg-default: linear-gradient(90deg, #c2ce3b 0%, #E9F931 100%);
 
     font-family: 'Segoe UI', sans-serif;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.30);
     position: fixed;
     inset: 0;
     z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: .15s linear;
+}
+
+.wheel-popup.is-active {
+    display: flex;
+}
+
+.wheel-popup.is-visible {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .wheel-popup__close {
     width: 40px;
     height: 40px;
     transition: .1s linear;
-    background: url('./images/cross.svg') no-repeat center, var(--gradient-main);
+    background: url('./images/cross.svg') no-repeat center, var(--gradient-main, var(--gradient-main-default));
     border-radius: 100%;
     position: absolute;
-    right: -20px;
-    top: -20px;
+    right: -16px;
+    top: -16px;
     cursor: pointer;
 }
 
@@ -43,6 +60,20 @@ body {
 .wheel-popup__wrapper {
     display: flex;
     align-items: center;
+    position: relative;
+    max-width: 1170px;
+    width: 100%;
+}
+
+.wheel-popup__wrapper::before {
+    content: '';
+    display: block;
+    width: 75%;
+    height: 50%;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    border-radius: 16px;
 }
 
 .wheel-content {
@@ -51,18 +82,18 @@ body {
     max-width: 600px;
     min-height: 300px;
     width: 100%;
-    border-radius: 0 16px 16px 0;
     padding: 24px;
     padding-left: 76px;
     margin-left: -60px;
-    background: #ffffff;
-    color: #2062B8;
+    background: var(--content-bg, var(--content-bg-default));
+    color: var(--content-text, var(--content-text-default));
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     flex-direction: column;
     z-index: 1;
     flex-shrink: 0;
+    border-radius: 16px;
 }
 
 .wheel-content__title {
@@ -101,13 +132,14 @@ body {
     height: 48px;
     padding: 0 16px;
     transition: .2s linear;
-    color: #ffffff;
+    color: var(--button-text, var(--button-text-default));
     font-size: 16px;
     font-weight: 700;
     line-height: 1.3;
     text-transform: uppercase;
     border-radius: 8px;
-    background: #EE6889;
+    background: var(--button-bg, var(--button-bg-default));
+    border: 2px solid var(--button-bg, var(--button-bg-default));
 }
 
 .wheel-content__button:disabled {
@@ -116,7 +148,8 @@ body {
 }
 
 .wheel-content__button:hover {
-    background: #e4335f;
+    color: var(--button-bg, var(--button-bg-default));
+    background: var(--button-text, var(--button-text-default));
 }
 
 .wheel-content__lettering {
@@ -130,13 +163,12 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
-    background: var(--gradient-main);
+    background: var(--gradient-main,  var(--gradient-main-default));
     padding-left: 100px;
     padding: 25px;
     border-radius: 100%;
     position: relative;
     z-index: 2;
-    box-shadow: -1px 2px 5px 2px rgb(15, 71, 145, .2);
 }
 
 .wheel__wrapper {
@@ -179,7 +211,7 @@ body {
     width: 93px;
     height: 93px;
     border-radius: 100%;
-    background: url('./images/logo.svg') no-repeat center / 80%, var(--gradient-main);
+    background: url('./images/logo.svg') no-repeat center / 80%, var(--gradient-main,  var(--gradient-main-default));
     position: absolute;
     left: 50%;
     top: 50%;
@@ -210,8 +242,7 @@ body {
     left: -30px;
     width: 40px;
     height: 30px;
-    background: linear-gradient(90deg, #c2ce3b 0%, #E9F931 100%);
-    ;
+    background: var(--ponter-bg, var(--ponter-bg-default));
     z-index: 1;
     clip-path: polygon(20% 0%, 100% 50%, 20% 100%, 25% 50%);
     transform-origin: center left;

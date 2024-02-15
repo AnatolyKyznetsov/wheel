@@ -1,91 +1,19 @@
-
-const prizes = [
-{
-    name: 'Приз 1',
-    text: 'lotem ipsum dolor sit amet',
-    isPrize: true,
-    id: 1,
-},
-{
-    name: 'Пусто 1',
-    text: 'lotem ipsum dolor sit amet',
-    isPrize: false,
-    id: 2,
-},
-{
-    // name: 'lotem ipsum dolor sit amet lotem ipsum dolor sit amet',
-    name: 'Приз 2',
-    text: 'lotem ipsum dolor sit amet',
-    isPrize: true,
-    id: 3,
-},
-{
-    name: 'Пусто 2',
-    text: 'lotem ipsum dolor sit amet',
-    isPrize: false,
-    id: 4,
-},
-{
-    name: 'Приз 3',
-    text: 'lotem ipsum dolor sit amet',
-    isPrize: true,
-    id: 5,
-},
-{
-    name: 'Пусто 3',
-    text: 'lotem ipsum dolor sit amet',
-    isPrize: false,
-    id: 6,
-},
-{
-    name: 'Приз 4',
-    text: 'lotem ipsum dolor sit amet',
-    isPrize: true,
-    id: 7,
-},
-{
-    name: 'Пусто 4',
-    text: 'lotem ipsum dolor sit amet',
-    isPrize: false,
-    id: 8,
-},
-{
-    name: 'Приз 5',
-    text: 'lotem ipsum dolor sit amet',
-    isPrize: true,
-    id: 9,
-},
-{
-    name: 'Пусто 5',
-    text: 'lotem ipsum dolor sit amet',
-    isPrize: false,
-    id: 10,
-},
-{
-    name: 'Приз 6',
-    text: 'lotem ipsum dolor sit amet',
-    isPrize: true,
-    id: 11,
-},
-{
-    name: 'Пусто 6',
-    text: 'lotem ipsum dolor sit amet',
-    isPrize: false,
-    id: 12,
-},
-];
-
 document.addEventListener('DOMContentLoaded', () => {
     const initWheel = () => {
+        const data = window.data;
         const wheel = document.querySelector('.js-wheel');
         const button = document.querySelector('.js-wheelStart');
         const triesBlock = document.querySelector('.js-tries');
         const audio = document.querySelector('.js-audio');
         const message = document.querySelector('.js-wheelText');
+        const popup = document.querySelector('.js-wheelPopuap');
+        const popupOpeners = document.querySelectorAll('.js-wheelPopuapOpen');
 
-        if (!wheel || !prizes) {
+        if (!wheel || !data) {
             return false;
         }
+
+        const prizes = data['PRIZES'];
 
         const list = wheel.querySelector('.js-wheelList');
         const pointer = wheel.querySelector('.js-wheelPointer');
@@ -100,19 +28,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const sectors = 360 / prizes.length;
         const offset = Math.floor(180 / prizes.length);
+        const styleVars = window.getComputedStyle(popup);
+        const sectorsColors = [
+            styleVars.getPropertyValue('--sector-odd') || '#2569C3',
+            styleVars.getPropertyValue('--sector-even') || '#25A9C3',
+        ];
 
         let pointerAnim = null;
         let items = null;
         let rotation = 0;
         let currentSector = 0;
-        let tries = 3;
-        let volume = .1;
+        let tries = data['TRIES'];
 
-        const setTries = () => {
-            tries--;
+        const setTries = (setStart) => {
+            if (!setStart) {
+                tries--;
+            }
 
             if (triesBlock) {
                 triesBlock.textContent = tries;
+            }
+
+            if (tries == 0) {
+                button.disabled = true;
+            }
+        }
+
+        const showPopup = () => {
+            if (!popup) {
+                return false;
+            }
+
+            popup.classList.add('is-active');
+
+            setTimeout(() => {
+                popup.classList.add('is-visible');
+            }, 100);
+
+            if (data['LAST_PIRIZE_ID']) {
+                const id = data['LAST_PIRIZE_ID'];
+                const position = itemPosition(id);
+                const lastPrize = data['PRIZES'].find(e => e.id = id);
+
+                list.style.setProperty('--rotate', position);
+
+                if (message && lastPrize) {
+                    message.textContent = lastPrize.text;
+                }
             }
         }
 
@@ -131,8 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (message) {
-                // message.textContent = target.text;
-            }            
+                message.textContent = target.text;
+            }
+            
+            data['LAST_PIRIZE_ID'] = target.id;
         };
 
         const runPointerAnimation = () => {
@@ -162,6 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return false;
             }
 
+            let volume = .1;
+
             const fadeOutInterval = setInterval(() => {
                 volume -= .01;
 
@@ -182,18 +148,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const max = Math.floor(target.endPos);
             const result = Math.floor(Math.random() * (max - min + 1)) + min;
 
-            console.log(target);
-            console.log(result);
-
             return result;
         }
-
 
         const setPosition = () => {
             const step = 360 / prizes.length;
 
             prizes.forEach((item, index) => {
-                item.startPos = step * index;
+                item.startPos = step * index + 1;
                 item.endPos = step * index + step - 1;
             });
         }
@@ -225,16 +187,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const int = setInterval(() => {
                 if (id) {
-                    console.log('tak');
-
                     volumeFadeOut();
                     clearInterval(int);
                     rotation += 360 + itemPosition(id);
                     wheel.classList.add('is-stoping');
                     list.style.setProperty('--rotate', rotation);
                 } else {
-                    console.log('tik');
-
                     wheel.classList.remove('is-active');
                     wheel.classList.add('is-active');
                     rotation += 360;
@@ -244,9 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // запрос
             setTimeout(() => {
-                id = 1;
-                // id = Math.floor(Math.random() * prizes.length) + 1;
-                console.log(id);
+                id = Math.floor(Math.random() * prizes.length) + 1;
             }, 2000);
         });
 
@@ -271,6 +227,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        popup?.addEventListener('click', e => {
+            if (e.target.classList.contains('js-wheelPopuap') || 
+                e.target.classList.contains('js-wheelPopuapClose')) {
+                    popup.classList.remove('is-visible');
+                    
+                    setTimeout(() => {
+                        popup.classList.remove('is-active');
+                    }, 200);
+                }
+        });
+
+        popupOpeners.forEach(opener => {
+            opener.addEventListener('click', showPopup);
+        });
+
         prizes.forEach(({ name }, index) => {
             const rotation = ((sectors * index) * -1) - offset;
 
@@ -279,12 +250,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         list.setAttribute('style',
             `background: conic-gradient(
-            from -90deg, ${prizes.map((item, i) => `${i % 2 === 0 ? '#2569C3' : '#25a9c3'} 0 ${(100 / prizes.length) * (prizes.length - i)}%`).reverse()});`
+            from -90deg, ${prizes.map((item, i) => `${i % 2 === 0 ? sectorsColors[0] : sectorsColors[1]} 0 ${(100 / prizes.length) * (prizes.length - i)}%`).reverse()});`
         );
 
         items = list.querySelectorAll('.js-wheelItem');
 
         setPosition();
+        setTries(true);
+
+        setTimeout(() => {
+            showPopup();
+        }, 1000);
     }
 
     initWheel();
